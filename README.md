@@ -67,4 +67,7 @@ To run them in docker, you need to pass the `BOT_TOKEN` and `CHAT_ID` arguments 
 
 ## Limitations:
 
-- The data size of the result JSON string should be less than 20MB.
+- The data size of the data JSON string should be less than 20MB (limitation of Telegram file size).
+- The size of all key-messageId pairs should be less than 256 characters (limitation of the channel description).
+- Commas and semicolons are not allowed in the data keys (they are used as separators).
+- The library does not support multiple data with the same key.
