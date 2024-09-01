@@ -1,4 +1,7 @@
-﻿namespace TelegramDataStorage.Interfaces;
+﻿using System.Threading;
+using System.Threading.Tasks;
+
+namespace TelegramDataStorage.Interfaces;
 
 /// <summary>
 /// Service that loads data from the storage.

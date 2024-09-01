@@ -1,4 +1,6 @@
-﻿namespace TelegramDataStorage.Interfaces;
+﻿using System.Threading.Tasks;
+
+namespace TelegramDataStorage.Interfaces;
 
 /// <summary>
 /// Service that stores message identifiers by data keys.

@@ -11,13 +11,16 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <Version>1.0.0</Version>
+        <Version>1.1.0</Version>
         <Authors>HRAshton</Authors>
         <PackageTags>Telegram</PackageTags>
         <Description>Store your data (config, session, etc.) in a telegram chat.</Description>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <PackageReleaseNotes>
+            - Exceptions and interfaces are now in the Abstractions project.
+        </PackageReleaseNotes>
     </PropertyGroup>
 
     <ItemGroup>
@@ -26,8 +29,8 @@
         <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.2"/>
         <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="8.0.0"/>
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
-          <PrivateAssets>all</PrivateAssets>
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.556">
             <PrivateAssets>all</PrivateAssets>
@@ -39,5 +42,9 @@
     <ItemGroup>
         <None Include="$(SolutionDir)README.md" Pack="true" PackagePath="\"/>
         <None Include="$(SolutionDir)LICENSE.txt" Pack="true" PackagePath="\"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\TelegramDataStorage.Abstractions\TelegramDataStorage.Abstractions.csproj"/>
     </ItemGroup>
 </Project>

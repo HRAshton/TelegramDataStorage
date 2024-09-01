@@ -1,4 +1,4 @@
-﻿using Telegram.Bot.Types;
+﻿using System.IO;
 
 namespace TelegramDataStorage.Interfaces;
 
@@ -11,10 +11,10 @@ public interface IDataConverter
     /// Prepares data to be sent to Telegram.
     /// </summary>
     /// <param name="data">Data to be serialized.</param>
-    /// <param name="inputFileStream">Resulting file data.</param>
+    /// <param name="filename">Name of the file to be sent.</param>
     /// <typeparam name="T">Type of the data to be serialized.</typeparam>
     /// <returns>Something that should be disposed after the data is sent.</returns>
-    IDisposable? Serialize<T>(T data, out InputFileStream inputFileStream)
+    Stream Serialize<T>(T data, out string filename)
         where T : IStoredData;
 
     /// <summary>

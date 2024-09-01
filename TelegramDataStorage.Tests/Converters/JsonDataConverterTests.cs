@@ -1,6 +1,5 @@
 ﻿using System.Text;
 using Newtonsoft.Json;
-using Telegram.Bot.Types;
 using TelegramDataStorage.Converters;
 using TelegramDataStorage.Interfaces;
 
@@ -20,20 +19,16 @@ public class JsonDataConverterTests
         };
 
         // Act
-        IDisposable disposable = _jsonDataConverter.Serialize(mockStoredData, out InputFileStream inputFileStream);
+        using Stream stream = _jsonDataConverter.Serialize(mockStoredData, out var filename);
 
         // Assert
-        Assert.NotNull(disposable);
-        Assert.NotNull(inputFileStream);
-        Assert.Equal("test.json", inputFileStream.FileName);
+        Assert.NotNull(stream);
+        Assert.NotNull(filename);
+        Assert.Equal("test.json", filename);
 
-        using (var reader = new StreamReader(inputFileStream.Content))
-        {
-            string jsonContent = reader.ReadToEnd();
-            Assert.Contains("\"SomeField\":\"test\"", jsonContent);
-        }
-
-        disposable.Dispose();
+        using var reader = new StreamReader(stream);
+        var jsonContent = reader.ReadToEnd();
+        Assert.Contains("\"SomeField\":\"test\"", jsonContent);
     }
 
     [Fact]
@@ -41,8 +36,7 @@ public class JsonDataConverterTests
     {
         // Arrange & Act & Assert
         Assert.Throws<ArgumentNullException>(() =>
-            _jsonDataConverter.Serialize<StoredDataStub>(null, out _)
-        );
+            _jsonDataConverter.Serialize<StoredDataStub>(null, out _));
     }
 
     [Fact]
@@ -65,8 +59,7 @@ public class JsonDataConverterTests
     {
         // Arrange & Act & Assert
         Assert.Throws<ArgumentNullException>(() =>
-            _jsonDataConverter.Deserialize<StoredDataStub>(null)
-        );
+            _jsonDataConverter.Deserialize<StoredDataStub>(null));
     }
 
     [Fact]

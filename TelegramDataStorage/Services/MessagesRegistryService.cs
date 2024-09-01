@@ -13,14 +13,14 @@ public partial class MessagesRegistryService(
     ITelegramBotWrapper telegramBotWrapper)
     : IMessagesRegistryService
 {
-    /// <inheritdoc />
+    /// <inheritdoc cref="IMessagesRegistryService.TryGetAsync" />
     public async Task<int?> TryGetAsync(string key)
     {
         var registry = await RetrieveMessagesRegistryAsync();
         return registry.TryGetValue(key, out var messageId) ? messageId : null;
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc cref="IMessagesRegistryService.AddOrUpdateAsync" />
     public async Task AddOrUpdateAsync(string key, int messageId)
     {
         var registry = await RetrieveMessagesRegistryAsync();

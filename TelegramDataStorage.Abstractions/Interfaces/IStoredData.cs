@@ -8,5 +8,5 @@ public interface IStoredData
     /// <summary>
     /// Gets the unique key of the stored data.
     /// </summary>
-    public static abstract string Key { get; }
+    static abstract string Key { get; }
 }

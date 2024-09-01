@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelegramDataStorage.Integra
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelegramDataStorage.Tests", "TelegramDataStorage.Tests\TelegramDataStorage.Tests.csproj", "{C9B73F49-7DBF-4A12-A390-CED85D27A2EF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelegramDataStorage.Abstractions", "TelegramDataStorage.Abstractions\TelegramDataStorage.Abstractions.csproj", "{6ACAD337-37D7-430F-BEAC-AD82390C4CB9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{C9B73F49-7DBF-4A12-A390-CED85D27A2EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C9B73F49-7DBF-4A12-A390-CED85D27A2EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C9B73F49-7DBF-4A12-A390-CED85D27A2EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6ACAD337-37D7-430F-BEAC-AD82390C4CB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6ACAD337-37D7-430F-BEAC-AD82390C4CB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6ACAD337-37D7-430F-BEAC-AD82390C4CB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6ACAD337-37D7-430F-BEAC-AD82390C4CB9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

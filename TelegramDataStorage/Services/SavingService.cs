@@ -15,7 +15,7 @@ public partial class SavingService(
     IDataConverter dataConverter)
     : ISavingService
 {
-    /// <inheritdoc />
+    /// <inheritdoc cref="ISavingService.SaveAsync{T}(T, CancellationToken)" />
     public async Task SaveAsync<T>(T data, CancellationToken cancellationToken = default)
         where T : class, IStoredData, new()
     {
@@ -42,10 +42,11 @@ public partial class SavingService(
     private async Task AddNewEntryAsync<T>(T data, CancellationToken cancellationToken)
         where T : IStoredData
     {
-        using var jsonStream = dataConverter.Serialize(data, out var inputFileStream);
+        await using var jsonStream = dataConverter.Serialize(data, out var filename);
+
         var message = await botClient.SendDocumentAsync(
             config.Value.ChatId,
-            inputFileStream,
+            new InputFileStream(jsonStream, filename),
             cancellationToken: cancellationToken);
 
         await messagesRegistryService.AddOrUpdateAsync(T.Key, message.MessageId);
@@ -55,11 +56,11 @@ public partial class SavingService(
     private async Task UpdateEntryAsync<T>(T data, int messageId, CancellationToken cancellationToken)
         where T : IStoredData
     {
-        using var jsonStream = dataConverter.Serialize(data, out var inputFileStream);
+        await using var jsonStream = dataConverter.Serialize(data, out var inputFileStream);
         await botClient.EditMessageMediaAsync(
             config.Value.ChatId,
             messageId,
-            new InputMediaDocument(inputFileStream),
+            new InputMediaDocument(new InputFileStream(jsonStream, inputFileStream)),
             cancellationToken: cancellationToken);
 
         await messagesRegistryService.AddOrUpdateAsync(T.Key, messageId);

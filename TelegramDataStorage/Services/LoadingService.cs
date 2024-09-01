@@ -14,7 +14,7 @@ public partial class LoadingService(
     IDataConverter dataConverter)
     : ILoadingService
 {
-    /// <inheritdoc />
+    /// <inheritdoc cref="ILoadingService.LoadAsync{T}(CancellationToken)" />
     public async Task<T?> LoadAsync<T>(CancellationToken cancellationToken = default)
         where T : class, IStoredData, new()
     {

@@ -1,7 +1,7 @@
-﻿using Moq;
+﻿using Microsoft.Extensions.Logging;
+using Moq;
 using TelegramDataStorage.Exceptions;
 using TelegramDataStorage.Interfaces;
-using Microsoft.Extensions.Logging;
 
 namespace TelegramDataStorage.Tests;
 

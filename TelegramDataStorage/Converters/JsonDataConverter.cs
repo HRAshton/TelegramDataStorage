@@ -1,6 +1,6 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using Newtonsoft.Json;
-using Telegram.Bot.Types;
 using TelegramDataStorage.Interfaces;
 
 namespace TelegramDataStorage.Converters;
@@ -10,8 +10,8 @@ namespace TelegramDataStorage.Converters;
 /// </summary>
 public class JsonDataConverter : IDataConverter
 {
-    /// <inheritdoc />
-    public IDisposable Serialize<T>(T data, out InputFileStream inputFileStream)
+    /// <inheritdoc cref="IDataConverter.Serialize{T}(T, out string)" />
+    public Stream Serialize<T>(T data, out string filename)
         where T : IStoredData
     {
         ArgumentNullException.ThrowIfNull(data);
@@ -19,11 +19,15 @@ public class JsonDataConverter : IDataConverter
         var json = JsonConvert.SerializeObject(data);
         var jsonStream = new MemoryStream(Encoding.UTF8.GetBytes(json));
 
-        inputFileStream = new InputFileStream(jsonStream, $"{T.Key}.json");
+        filename = $"{T.Key}.json";
         return jsonStream;
     }
 
-    /// <inheritdoc />
+    /// <inheritdoc cref="IDataConverter.Deserialize{T}(byte[])" />
+    [SuppressMessage(
+        "Performance",
+        "CA1822:Mark members as static",
+        Justification = "The method is an interface implementation.")]
     public T Deserialize<T>(byte[] fileContent)
         where T : IStoredData
     {
