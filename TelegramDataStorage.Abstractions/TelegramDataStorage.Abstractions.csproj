@@ -11,7 +11,7 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <Version>1.1.0</Version>
+        <Version>1.2.0-alpha</Version>
         <Authors>HRAshton</Authors>
         <PackageTags>Telegram;Abstractions</PackageTags>
         <Description>Abstractions for TelegramDataStorage.</Description>
@@ -19,7 +19,8 @@
         <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
         <PackageReleaseNotes>
-            - Exceptions and interfaces are now in the Abstractions project.
+            - Migrated from Newtonsoft.Json to System.Text.Json.
+            - Updated dependencies.
         </PackageReleaseNotes>
     </PropertyGroup>
 
