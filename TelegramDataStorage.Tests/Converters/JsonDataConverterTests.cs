@@ -1,5 +1,5 @@
 ﻿using System.Text;
-using Newtonsoft.Json;
+using System.Text.Json;
 using TelegramDataStorage.Converters;
 using TelegramDataStorage.Interfaces;
 
@@ -35,8 +35,7 @@ public class JsonDataConverterTests
     public void Serialize_NullData_ShouldThrowArgumentNullException()
     {
         // Arrange & Act & Assert
-        Assert.Throws<ArgumentNullException>(() =>
-            _jsonDataConverter.Serialize<StoredDataStub>(null, out _));
+        Assert.Throws<ArgumentNullException>(() => _jsonDataConverter.Serialize<StoredDataStub>(null, out _));
     }
 
     [Fact]
@@ -58,8 +57,7 @@ public class JsonDataConverterTests
     public void Deserialize_NullFileContent_ShouldThrowArgumentNullException()
     {
         // Arrange & Act & Assert
-        Assert.Throws<ArgumentNullException>(() =>
-            _jsonDataConverter.Deserialize<StoredDataStub>(null));
+        Assert.Throws<ArgumentNullException>(() => _jsonDataConverter.Deserialize<StoredDataStub>(null));
     }
 
     [Fact]
@@ -69,8 +67,7 @@ public class JsonDataConverterTests
         var invalidJsonBytes = "invalid json"u8.ToArray();
 
         // Act & Assert
-        Assert.Throws<JsonReaderException>(() =>
-            _jsonDataConverter.Deserialize<StoredDataStub>(invalidJsonBytes));
+        Assert.Throws<JsonException>(() => _jsonDataConverter.Deserialize<StoredDataStub>(invalidJsonBytes));
     }
 
     private class StoredDataStub : IStoredData

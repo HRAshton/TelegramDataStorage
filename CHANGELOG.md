@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+# 1.2.0
+
+## How to migrate
+
+In most cases you can just update the package and everything should work.
+If you have custom converters, you will need to update them to use the new `System.Text.Json` API.
+
+See the Microsoft migration guide for more information:
+https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/migrate-from-newtonsoft
+
+## Changed
+
+- Migrated from Newtonsoft.Json to System.Text.Json.
+- Updated dependencies.
+
 # 1.1.0
 
 ## Changed

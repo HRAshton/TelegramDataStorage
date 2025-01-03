@@ -1,6 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
-using System.Text;
-using Newtonsoft.Json;
+using System.Text.Json;
 using TelegramDataStorage.Interfaces;
 
 namespace TelegramDataStorage.Converters;
@@ -16,8 +15,9 @@ public class JsonDataConverter : IDataConverter
     {
         ArgumentNullException.ThrowIfNull(data);
 
-        var json = JsonConvert.SerializeObject(data);
-        var jsonStream = new MemoryStream(Encoding.UTF8.GetBytes(json));
+        var jsonStream = new MemoryStream();
+        JsonSerializer.Serialize(jsonStream, data);
+        jsonStream.Position = 0;
 
         filename = $"{T.Key}.json";
         return jsonStream;
@@ -33,7 +33,7 @@ public class JsonDataConverter : IDataConverter
     {
         ArgumentNullException.ThrowIfNull(fileContent);
 
-        var result = JsonConvert.DeserializeObject<T>(Encoding.UTF8.GetString(fileContent));
+        var result = JsonSerializer.Deserialize<T>(fileContent);
         return result ?? throw new InvalidOperationException("The file does not contain necessary data.");
     }
 }

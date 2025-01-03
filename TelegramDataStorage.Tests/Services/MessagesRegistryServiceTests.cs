@@ -37,7 +37,7 @@ public class MessagesRegistryServiceTests
     public async Task TryGetAsync_ShouldReturnMessageId_WhenKeyExists()
     {
         // Arrange
-        var chat = new Chat
+        var chat = new ChatFullInfo
         {
             Description = "key1,100;key2,200",
         };
@@ -56,7 +56,7 @@ public class MessagesRegistryServiceTests
     public async Task TryGetAsync_ShouldReturnNull_WhenKeyDoesNotExist()
     {
         // Arrange
-        var chat = new Chat
+        var chat = new ChatFullInfo
         {
             Description = "key1,100;key2,200",
         };
@@ -75,9 +75,9 @@ public class MessagesRegistryServiceTests
     public async Task TryGetAsync_ShouldReturnNull_WhenDescriptionIsEmpty()
     {
         // Arrange
-        var chat = new Chat
+        var chat = new ChatFullInfo
         {
-            Description = "",
+            Description = string.Empty,
         };
         _mockTelegramBotWrapper
             .Setup(b => b.GetChatAsync(It.IsAny<ChatId>(), It.IsAny<CancellationToken>()))
@@ -102,7 +102,7 @@ public class MessagesRegistryServiceTests
     public async Task AddOrUpdateAsync_ShouldUpdateRegistry_WhenKeyExists()
     {
         // Arrange
-        var chat = new Chat
+        var chat = new ChatFullInfo
         {
             Description = "key1,100;key2,200",
         };
@@ -126,7 +126,7 @@ public class MessagesRegistryServiceTests
     public async Task AddOrUpdateAsync_ShouldAddNewEntry_WhenKeyDoesNotExist()
     {
         // Arrange
-        var chat = new Chat
+        var chat = new ChatFullInfo
         {
             Description = "key1,100;key2,200",
         };
@@ -139,7 +139,8 @@ public class MessagesRegistryServiceTests
 
         // Assert
         _mockTelegramBotWrapper.Verify(
-            b => b.SetChatDescriptionAsync(123456789, "key1,100;key2,200;key3,300", It.IsAny<CancellationToken>()),
+            b =>
+                b.SetChatDescriptionAsync(123456789, "key1,100;key2,200;key3,300", It.IsAny<CancellationToken>()),
             Times.Once);
     }
 
@@ -147,9 +148,9 @@ public class MessagesRegistryServiceTests
     public async Task AddOrUpdateAsync_ShouldHandleEmptyDescription()
     {
         // Arrange
-        var chat = new Chat
+        var chat = new ChatFullInfo
         {
-            Description = "",
+            Description = string.Empty,
         };
         _mockTelegramBotWrapper
             .Setup(b => b.GetChatAsync(It.IsAny<ChatId>(), It.IsAny<CancellationToken>()))
@@ -160,7 +161,8 @@ public class MessagesRegistryServiceTests
 
         // Assert
         _mockTelegramBotWrapper.Verify(
-            b => b.SetChatDescriptionAsync(123456789, "key1,100", It.IsAny<CancellationToken>()),
+            b =>
+                b.SetChatDescriptionAsync(123456789, "key1,100", It.IsAny<CancellationToken>()),
             Times.Once);
     }
 
@@ -168,7 +170,7 @@ public class MessagesRegistryServiceTests
     public async Task RetrieveMessagesRegistryAsync_ShouldReturnEmptyDictionary_WhenDescriptionIsNull()
     {
         // Arrange
-        var chat = new Chat
+        var chat = new ChatFullInfo
         {
             Description = null,
         };

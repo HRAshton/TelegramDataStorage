@@ -14,7 +14,7 @@ public class TelegramBotWrapper(ITelegramBotClient botClient)
         InputFileStream document,
         CancellationToken cancellationToken = default)
     {
-        return botClient.SendDocumentAsync(chatId, document, cancellationToken: cancellationToken);
+        return botClient.SendDocument(chatId, document, cancellationToken: cancellationToken);
     }
 
     /// <inheritdoc />
@@ -24,7 +24,7 @@ public class TelegramBotWrapper(ITelegramBotClient botClient)
         int messageId,
         CancellationToken cancellationToken = default)
     {
-        return botClient.ForwardMessageAsync(chatId, fromChatId, messageId, cancellationToken: cancellationToken);
+        return botClient.ForwardMessage(chatId, fromChatId, messageId, cancellationToken: cancellationToken);
     }
 
     /// <inheritdoc />
@@ -34,7 +34,7 @@ public class TelegramBotWrapper(ITelegramBotClient botClient)
         InputMediaDocument inputMediaDocument,
         CancellationToken cancellationToken = default)
     {
-        return botClient.EditMessageMediaAsync(
+        return botClient.EditMessageMedia(
             chatId,
             messageId,
             inputMediaDocument,
@@ -47,7 +47,7 @@ public class TelegramBotWrapper(ITelegramBotClient botClient)
         int messageId,
         CancellationToken cancellationToken = default)
     {
-        return botClient.DeleteMessageAsync(chatId, messageId, cancellationToken);
+        return botClient.DeleteMessage(chatId, messageId, cancellationToken);
     }
 
     /// <inheritdoc />
@@ -56,15 +56,15 @@ public class TelegramBotWrapper(ITelegramBotClient botClient)
         Stream destination,
         CancellationToken cancellationToken = default)
     {
-        return botClient.GetInfoAndDownloadFileAsync(fileId, destination, cancellationToken);
+        return botClient.GetInfoAndDownloadFile(fileId, destination, cancellationToken);
     }
 
     /// <inheritdoc />
-    public Task<Chat> GetChatAsync(
+    public Task<ChatFullInfo> GetChatAsync(
         ChatId chatId,
         CancellationToken cancellationToken = default)
     {
-        return botClient.GetChatAsync(chatId, cancellationToken);
+        return botClient.GetChat(chatId, cancellationToken);
     }
 
     /// <inheritdoc />
@@ -73,6 +73,6 @@ public class TelegramBotWrapper(ITelegramBotClient botClient)
         string description,
         CancellationToken cancellationToken = default)
     {
-        return botClient.SetChatDescriptionAsync(chatId, description, cancellationToken);
+        return botClient.SetChatDescription(chatId, description, cancellationToken);
     }
 }

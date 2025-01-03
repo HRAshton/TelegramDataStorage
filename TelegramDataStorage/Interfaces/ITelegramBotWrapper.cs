@@ -71,7 +71,7 @@ public interface ITelegramBotWrapper
     /// <param name="chatId">Unique identifier for the chat.</param>
     /// <param name="cancellationToken">Token that can be used to cancel the operation.</param>
     /// <returns>Information about the chat.</returns>
-    public Task<Chat> GetChatAsync(ChatId chatId, CancellationToken cancellationToken = default);
+    public Task<ChatFullInfo> GetChatAsync(ChatId chatId, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Wraps the <see cref="Telegram.Bot.TelegramBotClientExtensions.SetChatDescriptionAsync" /> method.

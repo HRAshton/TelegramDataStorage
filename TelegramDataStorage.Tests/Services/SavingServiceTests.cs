@@ -52,14 +52,16 @@ public class SavingServiceTests
             .ReturnsAsync((int?)null);
 
         _mockBotClient
-            .Setup(b => b.SendDocumentAsync(
-                It.IsAny<ChatId>(),
-                It.IsAny<InputFileStream>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new Message
-            {
-                MessageId = 456,
-            });
+            .Setup(
+                b => b.SendDocumentAsync(
+                    It.IsAny<ChatId>(),
+                    It.IsAny<InputFileStream>(),
+                    It.IsAny<CancellationToken>()))
+            .ReturnsAsync(
+                new Message
+                {
+                    Id = 456,
+                });
 
         // Act
         await _savingService.SaveAsync(new TestStoredData());
@@ -87,11 +89,12 @@ public class SavingServiceTests
             .ReturnsAsync(messageId);
 
         _mockBotClient
-            .Setup(b => b.EditMessageMediaAsync(
-                It.IsAny<ChatId>(),
-                It.IsAny<int>(),
-                It.IsAny<InputMediaDocument>(),
-                It.IsAny<CancellationToken>()))
+            .Setup(
+                b => b.EditMessageMediaAsync(
+                    It.IsAny<ChatId>(),
+                    It.IsAny<int>(),
+                    It.IsAny<InputMediaDocument>(),
+                    It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask);
 
         // Act
@@ -116,14 +119,16 @@ public class SavingServiceTests
         const int messageId = 789;
 
         _mockBotClient
-            .Setup(b => b.SendDocumentAsync(
-                It.IsAny<ChatId>(),
-                It.IsAny<InputFileStream>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new Message
-            {
-                MessageId = messageId,
-            });
+            .Setup(
+                b => b.SendDocumentAsync(
+                    It.IsAny<ChatId>(),
+                    It.IsAny<InputFileStream>(),
+                    It.IsAny<CancellationToken>()))
+            .ReturnsAsync(
+                new Message
+                {
+                    Id = messageId,
+                });
 
         // Act
         await _savingService.SaveAsync(new TestStoredData());
@@ -149,11 +154,12 @@ public class SavingServiceTests
             .ReturnsAsync(123);
 
         _mockBotClient
-            .Setup(b => b.EditMessageMediaAsync(
-                It.IsAny<ChatId>(),
-                It.IsAny<int>(),
-                It.IsAny<InputMediaDocument>(),
-                It.IsAny<CancellationToken>()))
+            .Setup(
+                b => b.EditMessageMediaAsync(
+                    It.IsAny<ChatId>(),
+                    It.IsAny<int>(),
+                    It.IsAny<InputMediaDocument>(),
+                    It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask);
 
         // Act
