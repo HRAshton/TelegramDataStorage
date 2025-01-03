@@ -26,7 +26,7 @@ public class TelegramBotWrapperTests
         var document = new InputFileStream(new MemoryStream(), "test.pdf");
 
         _mockBotClient
-            .Setup(b => b.MakeRequestAsync(It.IsAny<SendDocumentRequest>(), It.IsAny<CancellationToken>()))
+            .Setup(b => b.SendRequest(It.IsAny<SendDocumentRequest>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new Message());
 
         // Act
@@ -34,12 +34,10 @@ public class TelegramBotWrapperTests
 
         // Assert
         Assert.Single(_mockBotClient.Invocations);
-        Assert.Equal(nameof(ITelegramBotClient.MakeRequestAsync), _mockBotClient.Invocations[0].Method.Name);
-        Assert.IsType<SendDocumentRequest>(_mockBotClient.Invocations[0].Arguments[0]);
-
-        Assert.Equivalent(
-            new SendDocumentRequest(chatId, document),
-            (SendDocumentRequest)_mockBotClient.Invocations[0].Arguments[0]);
+        Assert.Equal(nameof(ITelegramBotClient.SendRequest), _mockBotClient.Invocations[0].Method.Name);
+        var request = Assert.IsType<SendDocumentRequest>(_mockBotClient.Invocations[0].Arguments[0]);
+        Assert.Equal(chatId, request.ChatId);
+        Assert.Equal(document, request.Document);
     }
 
     [Fact]
@@ -51,7 +49,7 @@ public class TelegramBotWrapperTests
         var fromChatId = new ChatId(456);
 
         _mockBotClient
-            .Setup(b => b.MakeRequestAsync(It.IsAny<ForwardMessageRequest>(), It.IsAny<CancellationToken>()))
+            .Setup(b => b.SendRequest(It.IsAny<ForwardMessageRequest>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new Message());
 
         // Act
@@ -59,12 +57,11 @@ public class TelegramBotWrapperTests
 
         // Assert
         Assert.Single(_mockBotClient.Invocations);
-        Assert.Equal(nameof(ITelegramBotClient.MakeRequestAsync), _mockBotClient.Invocations[0].Method.Name);
-        Assert.IsType<ForwardMessageRequest>(_mockBotClient.Invocations[0].Arguments[0]);
-
-        Assert.Equivalent(
-            new ForwardMessageRequest(chatId, fromChatId, messageId),
-            (ForwardMessageRequest)_mockBotClient.Invocations[0].Arguments[0]);
+        Assert.Equal(nameof(ITelegramBotClient.SendRequest), _mockBotClient.Invocations[0].Method.Name);
+        var request = Assert.IsType<ForwardMessageRequest>(_mockBotClient.Invocations[0].Arguments[0]);
+        Assert.Equal(chatId, request.ChatId);
+        Assert.Equal(fromChatId, request.FromChatId);
+        Assert.Equal(messageId, request.MessageId);
     }
 
     [Fact]
@@ -76,7 +73,7 @@ public class TelegramBotWrapperTests
         var inputMediaDocument = new InputMediaDocument(new InputFileStream(new MemoryStream(), "test.pdf"));
 
         _mockBotClient
-            .Setup(b => b.MakeRequestAsync(It.IsAny<EditMessageMediaRequest>(), It.IsAny<CancellationToken>()))
+            .Setup(b => b.SendRequest(It.IsAny<EditMessageMediaRequest>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new Message());
 
         // Act
@@ -84,12 +81,11 @@ public class TelegramBotWrapperTests
 
         // Assert
         Assert.Single(_mockBotClient.Invocations);
-        Assert.Equal(nameof(ITelegramBotClient.MakeRequestAsync), _mockBotClient.Invocations[0].Method.Name);
-        Assert.IsType<EditMessageMediaRequest>(_mockBotClient.Invocations[0].Arguments[0]);
-
-        Assert.Equivalent(
-            new EditMessageMediaRequest(chatId, messageId, inputMediaDocument),
-            (EditMessageMediaRequest)_mockBotClient.Invocations[0].Arguments[0]);
+        Assert.Equal(nameof(ITelegramBotClient.SendRequest), _mockBotClient.Invocations[0].Method.Name);
+        var request = Assert.IsType<EditMessageMediaRequest>(_mockBotClient.Invocations[0].Arguments[0]);
+        Assert.Equal(chatId, request.ChatId);
+        Assert.Equal(messageId, request.MessageId);
+        Assert.Equal(inputMediaDocument, request.Media);
     }
 
     [Fact]
@@ -100,7 +96,7 @@ public class TelegramBotWrapperTests
         var chatId = new ChatId(123);
 
         _mockBotClient
-            .Setup(b => b.MakeRequestAsync(It.IsAny<DeleteMessageRequest>(), It.IsAny<CancellationToken>()))
+            .Setup(b => b.SendRequest(It.IsAny<DeleteMessageRequest>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(true);
 
         // Act
@@ -108,12 +104,10 @@ public class TelegramBotWrapperTests
 
         // Assert
         Assert.Single(_mockBotClient.Invocations);
-        Assert.Equal(nameof(ITelegramBotClient.MakeRequestAsync), _mockBotClient.Invocations[0].Method.Name);
-        Assert.IsType<DeleteMessageRequest>(_mockBotClient.Invocations[0].Arguments[0]);
-
-        Assert.Equivalent(
-            new DeleteMessageRequest(chatId, messageId),
-            (DeleteMessageRequest)_mockBotClient.Invocations[0].Arguments[0]);
+        Assert.Equal(nameof(ITelegramBotClient.SendRequest), _mockBotClient.Invocations[0].Method.Name);
+        var request = Assert.IsType<DeleteMessageRequest>(_mockBotClient.Invocations[0].Arguments[0]);
+        Assert.Equal(chatId, request.ChatId);
+        Assert.Equal(messageId, request.MessageId);
     }
 
     [Fact]
@@ -124,11 +118,15 @@ public class TelegramBotWrapperTests
         var destination = new MemoryStream();
 
         _mockBotClient
-            .Setup(b => b.MakeRequestAsync(It.IsAny<GetFileRequest>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new File { FileId = fileId });
+            .Setup(b => b.SendRequest(It.IsAny<GetFileRequest>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(
+                new File
+                {
+                    FileId = fileId,
+                });
 
         _mockBotClient
-            .Setup(b => b.DownloadFileAsync(It.IsAny<string>(), It.IsAny<Stream>(), It.IsAny<CancellationToken>()))
+            .Setup(b => b.DownloadFile(It.IsAny<string>(), It.IsAny<Stream>(), It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask);
 
         // Act
@@ -136,14 +134,11 @@ public class TelegramBotWrapperTests
 
         // Assert
         Assert.Equal(2, _mockBotClient.Invocations.Count);
-        Assert.Equal(nameof(ITelegramBotClient.MakeRequestAsync), _mockBotClient.Invocations[0].Method.Name);
-        Assert.IsType<GetFileRequest>(_mockBotClient.Invocations[0].Arguments[0]);
+        Assert.Equal(nameof(ITelegramBotClient.SendRequest), _mockBotClient.Invocations[0].Method.Name);
+        var request = Assert.IsType<GetFileRequest>(_mockBotClient.Invocations[0].Arguments[0]);
+        Assert.Equal(fileId, request.FileId);
 
-        Assert.Equivalent(
-            new GetFileRequest(fileId),
-            (GetFileRequest)_mockBotClient.Invocations[0].Arguments[0]);
-
-        Assert.Equal(nameof(ITelegramBotClient.DownloadFileAsync), _mockBotClient.Invocations[1].Method.Name);
+        Assert.Equal(nameof(ITelegramBotClient.DownloadFile), _mockBotClient.Invocations[1].Method.Name);
         Assert.Equal(destination, _mockBotClient.Invocations[1].Arguments[1]);
     }
 
@@ -154,19 +149,16 @@ public class TelegramBotWrapperTests
         var chatId = new ChatId(123);
 
         _mockBotClient
-            .Setup(b => b.MakeRequestAsync(It.IsAny<GetChatRequest>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new Chat());
+            .Setup(b => b.SendRequest(It.IsAny<GetChatRequest>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new ChatFullInfo());
 
         // Act
         await _telegramBotWrapper.GetChatAsync(chatId);
 
         // Assert
         Assert.Single(_mockBotClient.Invocations);
-        Assert.Equal(nameof(ITelegramBotClient.MakeRequestAsync), _mockBotClient.Invocations[0].Method.Name);
-        Assert.IsType<GetChatRequest>(_mockBotClient.Invocations[0].Arguments[0]);
-
-        Assert.Equivalent(
-            new GetChatRequest(chatId),
-            (GetChatRequest)_mockBotClient.Invocations[0].Arguments[0]);
+        Assert.Equal(nameof(ITelegramBotClient.SendRequest), _mockBotClient.Invocations[0].Method.Name);
+        var request = Assert.IsType<GetChatRequest>(_mockBotClient.Invocations[0].Arguments[0]);
+        Assert.Equal(chatId, request.ChatId);
     }
 }

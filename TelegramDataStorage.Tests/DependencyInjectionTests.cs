@@ -13,7 +13,7 @@ public class DependencyInjectionTests
     {
         // Arrange
         var services = new ServiceCollection();
-        var config = new TelegramDataStorageConfig("test", 123);
+        var config = new TelegramDataStorageConfig("0000000000:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", 123456789);
 
         // Act
         services.AddLogging();
@@ -42,7 +42,9 @@ public class DependencyInjectionTests
         var config = new TelegramDataStorageConfig("test", 123);
 
         // Act & Assert
+ #pragma warning disable CS8604 // Possible null reference argument.
         Assert.Throws<ArgumentNullException>(() => services.AddTelegramDataStorage(config));
+ #pragma warning restore CS8604 // Possible null reference argument.
     }
 
     [Fact]
@@ -53,6 +55,8 @@ public class DependencyInjectionTests
         TelegramDataStorageConfig config = null;
 
         // Act & Assert
+ #pragma warning disable CS8604 // Possible null reference argument.
         Assert.Throws<ArgumentNullException>(() => services.AddTelegramDataStorage(config));
+ #pragma warning restore CS8604 // Possible null reference argument.
     }
 }

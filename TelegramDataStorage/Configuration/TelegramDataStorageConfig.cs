@@ -1,6 +1,4 @@
-﻿using Telegram.Bot.Types;
-
-namespace TelegramDataStorage.Configuration;
+﻿namespace TelegramDataStorage.Configuration;
 
 /// <summary>
 /// Configuration for the Telegram data storage.

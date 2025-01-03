@@ -28,7 +28,7 @@ public class Test
     {
         var config = GetConfig();
         var telegramClient = new TelegramBotClient(config.BotToken);
-        await telegramClient.SetChatDescriptionAsync(config.ChatId);
+        await telegramClient.SetChatDescription(config.ChatId);
 
         var service = GetService(config);
         var (expectedNestedData, expectedBytesData) = GenerateData();

@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json;
 using TelegramDataStorage.Interfaces;
 
 namespace TelegramDataStorage.IntegrationTests.Models;
@@ -24,6 +24,6 @@ public record NestedData : IStoredData
 
     public override string ToString()
     {
-        return JsonConvert.SerializeObject(this, Formatting.Indented);
+        return JsonSerializer.Serialize(this);
     }
 }
