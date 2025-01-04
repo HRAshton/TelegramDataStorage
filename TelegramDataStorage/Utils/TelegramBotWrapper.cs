@@ -1,5 +1,6 @@
 using Telegram.Bot;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 using TelegramDataStorage.Interfaces;
 
 namespace TelegramDataStorage.Utils;
@@ -74,5 +75,19 @@ public class TelegramBotWrapper(ITelegramBotClient botClient)
         CancellationToken cancellationToken = default)
     {
         return botClient.SetChatDescription(chatId, description, cancellationToken);
+    }
+
+    /// <inheritdoc />
+    public Task<Update[]> GetUpdatesAsync(
+        int? offset,
+        int? timeout,
+        IEnumerable<UpdateType>? allowedUpdates = null,
+        CancellationToken cancellationToken = default)
+    {
+        return botClient.GetUpdates(
+            offset: offset,
+            timeout: timeout,
+            allowedUpdates: allowedUpdates,
+            cancellationToken: cancellationToken);
     }
 }

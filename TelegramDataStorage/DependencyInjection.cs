@@ -34,6 +34,7 @@ public static class DependencyInjection
             .AddSingleton<ILoadingService, LoadingService>()
             .AddSingleton<ISavingService, SavingService>()
             .AddSingleton<ITelegramDataStorage, TelegramDataStorage>()
+            .AddSingleton<ISubscriptionService, SubscriptionService>()
             .AddSingleton<ITelegramBotWrapper>(new TelegramBotWrapper(new TelegramBotClient(config.BotToken)));
     }
 }

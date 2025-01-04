@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -21,6 +22,7 @@ public class Test
     /// 3. Sends nested data and bytes data.
     /// 4. Loads the data.
     /// 5. Checks that the loaded data is equal to the expected data.
+    /// 6. Check that after 3rd step SubscriptionService notifies about the changes.
     /// </summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     [Fact]
@@ -28,25 +30,42 @@ public class Test
     {
         var config = GetConfig();
         var telegramClient = new TelegramBotClient(config.BotToken);
-        await telegramClient.SetChatDescription(config.ChatId);
+        if (await telegramClient.GetChat(config.ChatId) is { Description: not null })
+        {
+            await telegramClient.SetChatDescription(config.ChatId);
+        }
 
-        var service = GetService(config);
+        var (storageService, subscriptionService) = GetService(config);
         var (expectedNestedData, expectedBytesData) = GenerateData();
 
-        var nestedData = await service.LoadAsync<NestedData>();
-        var bytesData = await service.LoadAsync<BytesData>();
+        var receivedUpdates = new ConcurrentQueue<string>();
+        subscriptionService.Subscribe(
+            changedKeys =>
+            {
+                Assert.Single(changedKeys);
+                receivedUpdates.Enqueue(changedKeys.Single());
+            });
+
+        var nestedData = await storageService.LoadAsync<NestedData>();
+        var bytesData = await storageService.LoadAsync<BytesData>();
         Assert.Null(nestedData);
         Assert.Null(bytesData);
 
-        await service.SaveAsync(expectedNestedData);
-        await service.SaveAsync(expectedBytesData);
-        nestedData = await service.LoadAsync<NestedData>();
-        bytesData = await service.LoadAsync<BytesData>();
+        await storageService.SaveAsync(expectedNestedData);
+        await storageService.SaveAsync(expectedBytesData);
+        nestedData = await storageService.LoadAsync<NestedData>();
+        bytesData = await storageService.LoadAsync<BytesData>();
 
         Assert.NotNull(nestedData);
         Assert.NotNull(bytesData);
         Assert.Equivalent(expectedNestedData, nestedData);
         Assert.Equivalent(expectedBytesData, bytesData);
+
+        await Task.Delay(-1);
+
+        Assert.Equal(2, receivedUpdates.Count);
+        Assert.Equal(NestedData.Key, receivedUpdates.TryDequeue(out var key) ? key : null);
+        Assert.Equal(BytesData.Key, receivedUpdates.TryDequeue(out key) ? key : null);
     }
 
     private static TelegramDataStorageConfig GetConfig()
@@ -64,14 +83,16 @@ public class Test
                ?? throw new InvalidOperationException("TelegramDataStorageConfig is not set");
     }
 
-    private static ITelegramDataStorage GetService(TelegramDataStorageConfig telegramDataStorageConfig)
+    private static (ITelegramDataStorage TelegramStorageService, ISubscriptionService SubscriptionService)
+        GetService(TelegramDataStorageConfig telegramDataStorageConfig)
     {
         var serviceProvider = new ServiceCollection()
             .AddLogging(configure => configure.AddConsole())
             .AddTelegramDataStorage(telegramDataStorageConfig)
             .BuildServiceProvider();
 
-        return serviceProvider.GetRequiredService<ITelegramDataStorage>();
+        return (serviceProvider.GetRequiredService<ITelegramDataStorage>(),
+            serviceProvider.GetRequiredService<ISubscriptionService>());
     }
 
     private static (NestedData NestedData, BytesData BytesData) GenerateData()

@@ -30,6 +30,12 @@ public partial class MessagesRegistryService(
         await telegramBotWrapper.SetChatDescriptionAsync(config.Value.ChatId, description);
     }
 
+    /// <inheritdoc />
+    public Task<IDictionary<string, int>> ListAsync()
+    {
+        return RetrieveMessagesRegistryAsync();
+    }
+
     private async Task<IDictionary<string, int>> RetrieveMessagesRegistryAsync()
     {
         var chat = await telegramBotWrapper.GetChatAsync(config.Value.ChatId);

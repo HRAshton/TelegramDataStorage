@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace TelegramDataStorage.Interfaces;
 
@@ -21,4 +22,10 @@ public interface IMessagesRegistryService
     /// <param name="messageId">Identifier of the message.</param>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     Task AddOrUpdateAsync(string key, int messageId);
+
+    /// <summary>
+    /// Lists all stored data keys with their message identifiers.
+    /// </summary>
+    /// <returns>A dictionary with data keys as keys and message identifiers as values.</returns>
+    Task<IDictionary<string, int>> ListAsync();
 }

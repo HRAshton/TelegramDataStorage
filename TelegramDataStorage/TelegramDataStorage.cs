@@ -11,7 +11,7 @@ public partial class TelegramDataStorage(
     ILoadingService loadingService)
     : ITelegramDataStorage
 {
-    /// <inheritdoc cref="ISavingService.SaveAsync{T}(T, CancellationToken)" />
+    /// <inheritdoc />
     public async Task SaveAsync<T>(T data, CancellationToken cancellationToken = default)
         where T : class, IStoredData, new()
     {
@@ -28,7 +28,7 @@ public partial class TelegramDataStorage(
         }
     }
 
-    /// <inheritdoc cref="ILoadingService.LoadAsync{T}(CancellationToken)" />
+    /// <inheritdoc />
     public async Task<T?> LoadAsync<T>(CancellationToken cancellationToken = default)
         where T : class, IStoredData, new()
     {
