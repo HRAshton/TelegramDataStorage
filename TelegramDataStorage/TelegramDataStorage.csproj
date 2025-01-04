@@ -50,6 +50,6 @@
     </ItemGroup>
 
     <ItemGroup Condition=" '$(Configuration)' == 'Release' ">
-        <PackageReference Include="TelegramDataStorage.Abstractions" Version="$(Version)"/>
+        <PackageReference Include="TelegramDataStorage.Abstractions" Version="1.1.0"/>
     </ItemGroup>
 </Project>
