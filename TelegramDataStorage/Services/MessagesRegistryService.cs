@@ -24,6 +24,14 @@ public partial class MessagesRegistryService(
     public async Task AddOrUpdateAsync(string key, int messageId)
     {
         var registry = await RetrieveMessagesRegistryAsync();
+
+        if (registry.TryGetValue(key, out var currentMessageId)
+            && currentMessageId == messageId)
+        {
+            Log.NoUpdateRequired(logger, key, messageId);
+            return;
+        }
+
         registry[key] = messageId;
 
         var description = string.Join(';', registry.Select(pair => $"{pair.Key},{pair.Value}"));

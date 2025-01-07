@@ -47,6 +47,20 @@ public class Test
         Assert.NotNull(bytesData);
         Assert.Equivalent(expectedNestedData, nestedData);
         Assert.Equivalent(expectedBytesData, bytesData);
+
+        Assert.NotNull(nestedData);
+        var updatedData = nestedData with
+        {
+            Address = new Address
+            {
+                City = "Los Angeles",
+            },
+        };
+        await service.SaveAsync(updatedData);
+        nestedData = await service.LoadAsync<NestedData>();
+
+        Assert.NotNull(nestedData);
+        Assert.Equivalent(updatedData, nestedData);
     }
 
     private static TelegramDataStorageConfig GetConfig()
