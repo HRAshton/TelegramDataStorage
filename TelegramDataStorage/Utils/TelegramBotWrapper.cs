@@ -24,7 +24,11 @@ public class TelegramBotWrapper(ITelegramBotClient botClient)
         int messageId,
         CancellationToken cancellationToken = default)
     {
-        return botClient.ForwardMessage(chatId, fromChatId, messageId, cancellationToken: cancellationToken);
+        return botClient.ForwardMessage(
+            chatId,
+            fromChatId,
+            messageId,
+            cancellationToken: cancellationToken);
     }
 
     /// <inheritdoc />
