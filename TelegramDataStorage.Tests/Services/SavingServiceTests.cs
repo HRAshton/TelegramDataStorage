@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
-using Telegram.Bot.Types;
 using TelegramDataStorage.Configuration;
 using TelegramDataStorage.Interfaces;
 using TelegramDataStorage.Services;
@@ -26,7 +25,7 @@ public class SavingServiceTests
         _mockMessagesRegistryService = new Mock<IMessagesRegistryService>();
         Mock<IDataConverter> mockDataConverter = new();
 
-        mockConfig.Setup(c => c.Value).Returns(new TelegramDataStorageConfig("asd", 1));
+        mockConfig.Setup(c => c.Value).Returns(new TelegramDataStorageConfig("fake-bot-token", 0xdeadbeef));
 
         _savingService = new SavingService(
             _mockLogger.Object,
@@ -47,6 +46,8 @@ public class SavingServiceTests
     public async Task SaveAsync_ShouldLogWarningAndAddNewEntry_WhenMessageIdIsNull()
     {
         // Arrange
+        const int messageId = 123;
+
         _mockMessagesRegistryService
             .Setup(s => s.TryGetAsync(It.IsAny<string>()))
             .ReturnsAsync((int?)null);
@@ -54,14 +55,11 @@ public class SavingServiceTests
         _mockBotClient
             .Setup(
                 b => b.SendDocumentAsync(
-                    It.IsAny<ChatId>(),
-                    It.IsAny<InputFileStream>(),
+                    It.IsAny<long>(),
+                    It.IsAny<string>(),
+                    It.IsAny<Stream>(),
                     It.IsAny<CancellationToken>()))
-            .ReturnsAsync(
-                new Message
-                {
-                    Id = 456,
-                });
+            .ReturnsAsync(messageId);
 
         // Act
         await _savingService.SaveAsync(new TestStoredData());
@@ -75,7 +73,7 @@ public class SavingServiceTests
                 It.IsAny<Exception>(),
                 It.IsAny<Func<It.IsAnyType, Exception, string>>()),
             Times.Once);
-        _mockMessagesRegistryService.Verify(s => s.AddOrUpdateAsync(It.IsAny<string>(), 456), Times.Once);
+        _mockMessagesRegistryService.Verify(s => s.AddOrUpdateAsync(It.IsAny<string>(), messageId), Times.Once);
     }
 
     [Fact]
@@ -91,9 +89,10 @@ public class SavingServiceTests
         _mockBotClient
             .Setup(
                 b => b.EditMessageMediaAsync(
-                    It.IsAny<ChatId>(),
+                    It.IsAny<long>(),
                     It.IsAny<int>(),
-                    It.IsAny<InputMediaDocument>(),
+                    It.IsAny<string>(),
+                    It.IsAny<Stream>(),
                     It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask);
 
@@ -121,14 +120,11 @@ public class SavingServiceTests
         _mockBotClient
             .Setup(
                 b => b.SendDocumentAsync(
-                    It.IsAny<ChatId>(),
-                    It.IsAny<InputFileStream>(),
+                    It.IsAny<long>(),
+                    It.IsAny<string>(),
+                    It.IsAny<Stream>(),
                     It.IsAny<CancellationToken>()))
-            .ReturnsAsync(
-                new Message
-                {
-                    Id = messageId,
-                });
+            .ReturnsAsync(messageId);
 
         // Act
         await _savingService.SaveAsync(new TestStoredData());
@@ -149,16 +145,19 @@ public class SavingServiceTests
     public async Task UpdateEntryAsync_ShouldEditMessageMedia()
     {
         // Arrange
+        const int messageId = 123;
+
         _mockMessagesRegistryService
             .Setup(s => s.TryGetAsync(It.IsAny<string>()))
-            .ReturnsAsync(123);
+            .ReturnsAsync(messageId);
 
         _mockBotClient
             .Setup(
                 b => b.EditMessageMediaAsync(
-                    It.IsAny<ChatId>(),
+                    It.IsAny<long>(),
                     It.IsAny<int>(),
-                    It.IsAny<InputMediaDocument>(),
+                    It.IsAny<string>(),
+                    It.IsAny<Stream>(),
                     It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask);
 
@@ -168,9 +167,10 @@ public class SavingServiceTests
         // Assert
         _mockBotClient.Verify(
             b => b.EditMessageMediaAsync(
-                It.IsAny<ChatId>(),
-                123,
-                It.IsAny<InputMediaDocument>(),
+                It.IsAny<long>(),
+                messageId,
+                It.IsAny<string>(),
+                It.IsAny<Stream>(),
                 It.IsAny<CancellationToken>()),
             Times.Once);
     }

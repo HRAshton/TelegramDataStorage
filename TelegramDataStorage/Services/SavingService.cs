@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Telegram.Bot.Types;
 using TelegramDataStorage.Configuration;
 using TelegramDataStorage.Interfaces;
 
@@ -44,13 +43,14 @@ public partial class SavingService(
     {
         await using var jsonStream = dataConverter.Serialize(data, out var filename);
 
-        var message = await botClient.SendDocumentAsync(
+        var messageId = await botClient.SendDocumentAsync(
             config.Value.ChatId,
-            new InputFileStream(jsonStream, filename),
+            filename,
+            jsonStream,
             cancellationToken: cancellationToken);
 
-        await messagesRegistryService.AddOrUpdateAsync(T.Key, message.MessageId);
-        Log.NewEntryCreated(logger, T.Key, message.MessageId);
+        await messagesRegistryService.AddOrUpdateAsync(T.Key, messageId);
+        Log.NewEntryCreated(logger, T.Key, messageId);
     }
 
     private async Task UpdateEntryAsync<T>(T data, int messageId, CancellationToken cancellationToken)
@@ -60,7 +60,8 @@ public partial class SavingService(
         await botClient.EditMessageMediaAsync(
             config.Value.ChatId,
             messageId,
-            new InputMediaDocument(new InputFileStream(jsonStream, inputFileStream)),
+            inputFileStream,
+            jsonStream,
             cancellationToken: cancellationToken);
 
         await messagesRegistryService.AddOrUpdateAsync(T.Key, messageId);

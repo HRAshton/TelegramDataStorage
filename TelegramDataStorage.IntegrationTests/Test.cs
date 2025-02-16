@@ -11,8 +11,34 @@ namespace TelegramDataStorage.IntegrationTests;
 /// <summary>
 /// Integration tests for the Telegram data storage.
 /// </summary>
-public class Test
+public class Test : IAsyncLifetime
 {
+    private readonly TelegramDataStorageConfig _config;
+    private readonly TelegramBotClient _telegramClient;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="Test"/> class.
+    /// Sets up the configuration and the Telegram client.
+    /// </summary>
+    public Test()
+    {
+        _config = GetConfig();
+        _telegramClient = new TelegramBotClient(_config.BotToken);
+    }
+
+    /// <inheritdoc/>
+    public async Task InitializeAsync()
+    {
+        await _telegramClient.SetChatDescription(_config.ChatId, $"{Random.Shared.Next()}");
+        await _telegramClient.SetChatDescription(_config.ChatId);
+    }
+
+    /// <inheritdoc/>
+    public async Task DisposeAsync()
+    {
+        await _telegramClient.SetChatDescription(_config.ChatId);
+    }
+
     /// <summary>
     /// Tests the sending of complex data and loading it.
     /// Workflow:
@@ -26,11 +52,7 @@ public class Test
     [Fact]
     public async Task SendComplexDataAndLoadIt()
     {
-        var config = GetConfig();
-        var telegramClient = new TelegramBotClient(config.BotToken);
-        await telegramClient.SetChatDescription(config.ChatId);
-
-        var service = GetService(config);
+        var service = GetService(_config);
         var (expectedNestedData, expectedBytesData) = GenerateData();
 
         var nestedData = await service.LoadAsync<NestedData>();
@@ -96,22 +118,17 @@ public class Test
             Age = 42,
             Address = new Address
             {
-                City = "New York",
-                Street = "5th Avenue",
-                PostalCode = "10001",
-                Country = null,
+                City = "New York", Street = "5th Avenue", PostalCode = "10001", Country = null,
             },
             Roles =
             [
                 new Role
                 {
-                    RoleName = "Admin",
-                    Permissions = [ "Read", "Write" ],
+                    RoleName = "Admin", Permissions = [ "Read", "Write" ],
                 },
                 new Role
                 {
-                    RoleName = "User",
-                    Permissions = [ "Read" ],
+                    RoleName = "User", Permissions = [ "Read" ],
                 },
             ],
             Preferences = new Dictionary<string, string>

@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
-using Telegram.Bot.Types;
 using TelegramDataStorage.Configuration;
 using TelegramDataStorage.Interfaces;
 using TelegramDataStorage.Services;
@@ -64,17 +63,20 @@ public class LoadingServiceTests
     public async Task LoadAsync_ShouldThrowInvalidOperationException_WhenMessageHasNoFile()
     {
         // Arrange
+        const int messageId = 123;
+
         _mockMessagesRegistryService
             .Setup(s => s.TryGetAsync(It.IsAny<string>()))
-            .ReturnsAsync(123);
+            .ReturnsAsync(messageId);
 
         _mockBotClient
-            .Setup(b => b.ForwardMessageAsync(
-                It.IsAny<ChatId>(),
-                It.IsAny<ChatId>(),
-                It.IsAny<int>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new Message());
+            .Setup(
+                b => b.ForwardFileMessageAsync(
+                    It.IsAny<long>(),
+                    It.IsAny<long>(),
+                    It.IsAny<int>(),
+                    It.IsAny<CancellationToken>()))
+            .ReturnsAsync((messageId, null));
 
         // Act & Assert
         await Assert.ThrowsAsync<InvalidOperationException>(() => _loadingService.LoadAsync<TestStoredData>());
@@ -84,29 +86,28 @@ public class LoadingServiceTests
     public async Task LoadAsync_ShouldThrowInvalidOperationException_WhenFileCannotBeDeserialized()
     {
         // Arrange
+        const int messageId = 123;
+        const string fileId = "file-id";
+
         _mockMessagesRegistryService
             .Setup(s => s.TryGetAsync(It.IsAny<string>()))
-            .ReturnsAsync(123);
+            .ReturnsAsync(messageId);
 
         _mockBotClient
-            .Setup(b => b.ForwardMessageAsync(
-                It.IsAny<ChatId>(),
-                It.IsAny<ChatId>(),
-                It.IsAny<int>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new Message
-            {
-                Document = new Document
-                {
-                    FileId = "file-id",
-                },
-            });
+            .Setup(
+                b => b.ForwardFileMessageAsync(
+                    It.IsAny<long>(),
+                    It.IsAny<long>(),
+                    It.IsAny<int>(),
+                    It.IsAny<CancellationToken>()))
+            .ReturnsAsync((messageId, fileId));
 
         _mockBotClient
-            .Setup(b => b.GetInfoAndDownloadFileAsync(
-                It.IsAny<string>(),
-                It.IsAny<Stream>(),
-                It.IsAny<CancellationToken>()))
+            .Setup(
+                b => b.DownloadFileAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<Stream>(),
+                    It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask);
 
         _mockDataConverter
@@ -121,37 +122,38 @@ public class LoadingServiceTests
     public async Task LoadAsync_ShouldReturnDeserializedObject_WhenFileIsValid()
     {
         // Arrange
+        const int messageId = 123;
+        const string fileId = "file-id";
+
         var expectedData = new TestStoredData();
+
         _mockMessagesRegistryService
             .Setup(s => s.TryGetAsync(It.IsAny<string>()))
-            .ReturnsAsync(123);
+            .ReturnsAsync(messageId);
 
         _mockBotClient
-            .Setup(b => b.ForwardMessageAsync(
-                It.IsAny<ChatId>(),
-                It.IsAny<ChatId>(),
-                It.IsAny<int>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new Message
-            {
-                Document = new Document
+            .Setup(
+                b => b.ForwardFileMessageAsync(
+                    It.IsAny<long>(),
+                    It.IsAny<long>(),
+                    It.IsAny<int>(),
+                    It.IsAny<CancellationToken>()))
+            .ReturnsAsync((messageId, fileId));
+
+        _mockBotClient
+            .Setup(
+                b => b.DownloadFileAsync(
+                    It.IsAny<string>(),
+                    It.IsAny<Stream>(),
+                    It.IsAny<CancellationToken>()))
+            .Callback<string, Stream, CancellationToken>(
+                (_, stream, _) =>
                 {
-                    FileId = "file-id",
-                },
-            });
-
-        _mockBotClient
-            .Setup(b => b.GetInfoAndDownloadFileAsync(
-                It.IsAny<string>(),
-                It.IsAny<Stream>(),
-                It.IsAny<CancellationToken>()))
-            .Callback<string, Stream, CancellationToken>((_, stream, _) =>
-            {
-                // Simulate file content download
-                var content = "{\"Key\":\"TestKey\"}"u8.ToArray();
-                stream.Write(content, 0, content.Length);
-                stream.Position = 0;
-            })
+                    // Simulate file content download
+                    var content = "{\"Key\":\"TestKey\"}"u8.ToArray();
+                    stream.Write(content, 0, content.Length);
+                    stream.Position = 0;
+                })
             .Returns(Task.CompletedTask);
 
         _mockDataConverter

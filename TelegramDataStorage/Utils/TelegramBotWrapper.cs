@@ -9,73 +9,70 @@ public class TelegramBotWrapper(ITelegramBotClient botClient)
     : ITelegramBotWrapper
 {
     /// <inheritdoc />
-    public Task<Message> SendDocumentAsync(
-        ChatId chatId,
-        InputFileStream document,
+    public Task<int> SendDocumentAsync(
+        long chatId,
+        string filename,
+        Stream documentStream,
         CancellationToken cancellationToken = default)
     {
-        return botClient.SendDocument(chatId, document, cancellationToken: cancellationToken);
+        return botClient.SendDocument(
+                chatId,
+                InputFile.FromStream(documentStream, filename),
+                cancellationToken: cancellationToken)
+            .ContinueWith(task => task.Result.Id, cancellationToken);
     }
 
     /// <inheritdoc />
-    public Task<Message> ForwardMessageAsync(
-        ChatId chatId,
-        ChatId fromChatId,
+    public Task<(int MessageId, string? FileId)> ForwardFileMessageAsync(
+        long chatId,
+        long fromChatId,
         int messageId,
         CancellationToken cancellationToken = default)
     {
         return botClient.ForwardMessage(
-            chatId,
-            fromChatId,
-            messageId,
-            cancellationToken: cancellationToken);
+                chatId,
+                fromChatId,
+                messageId,
+                cancellationToken: cancellationToken)
+            .ContinueWith(task => (task.Result.Id, task.Result.Document?.FileId), cancellationToken);
     }
 
     /// <inheritdoc />
     public Task EditMessageMediaAsync(
-        ChatId chatId,
+        long chatId,
         int messageId,
-        InputMediaDocument inputMediaDocument,
+        string filename,
+        Stream documentStream,
         CancellationToken cancellationToken = default)
     {
         return botClient.EditMessageMedia(
             chatId,
             messageId,
-            inputMediaDocument,
+            new InputMediaDocument(InputFile.FromStream(documentStream, filename)),
             cancellationToken: cancellationToken);
     }
 
     /// <inheritdoc />
-    public Task DeleteMessageAsync(
-        ChatId chatId,
-        int messageId,
-        CancellationToken cancellationToken = default)
+    public Task DeleteMessageAsync(long chatId, int messageId, CancellationToken cancellationToken = default)
     {
         return botClient.DeleteMessage(chatId, messageId, cancellationToken);
     }
 
     /// <inheritdoc />
-    public Task GetInfoAndDownloadFileAsync(
-        string fileId,
-        Stream destination,
-        CancellationToken cancellationToken = default)
+    public Task DownloadFileAsync(string fileId, Stream destination, CancellationToken cancellationToken = default)
     {
         return botClient.GetInfoAndDownloadFile(fileId, destination, cancellationToken);
     }
 
     /// <inheritdoc />
-    public Task<ChatFullInfo> GetChatAsync(
-        ChatId chatId,
-        CancellationToken cancellationToken = default)
+    public Task<string?> GetChatDescriptionAsync(long chatId, CancellationToken cancellationToken = default)
     {
-        return botClient.GetChat(chatId, cancellationToken);
+        return botClient.GetChat(chatId, cancellationToken)
+            .ContinueWith(task => task.Result.Description, cancellationToken);
     }
 
     /// <inheritdoc />
-    public Task SetChatDescriptionAsync(
-        ChatId chatId,
-        string description,
-        CancellationToken cancellationToken = default)
+    public Task SetChatDescriptionAsync(long chatId, string description, CancellationToken cancellationToken = default)
     {
         return botClient.SetChatDescription(chatId, description, cancellationToken);
     }

@@ -40,28 +40,27 @@ public partial class LoadingService(
         int messageId,
         CancellationToken cancellationToken = default)
     {
-        var forwardedMessage = await botClient.ForwardMessageAsync(
+        var (forwardedMessageId, filePath) = await botClient.ForwardFileMessageAsync(
             config.Value.ChatId,
             config.Value.ChatId,
             messageId,
             cancellationToken: cancellationToken);
-        var fileId = forwardedMessage.Document?.FileId;
-        if (fileId is null)
+        if (filePath is null)
         {
             throw new InvalidOperationException("The message does not contain a file.");
         }
 
-        var fileContent = await DownloadFileAsync(fileId, cancellationToken);
+        var fileContent = await DownloadFileAsync(filePath, cancellationToken);
 
-        await botClient.DeleteMessageAsync(config.Value.ChatId, forwardedMessage.MessageId, cancellationToken);
+        await botClient.DeleteMessageAsync(config.Value.ChatId, forwardedMessageId, cancellationToken);
 
         return fileContent;
     }
 
-    private async Task<byte[]> DownloadFileAsync(string fileId, CancellationToken cancellationToken = default)
+    private async Task<byte[]> DownloadFileAsync(string filePath, CancellationToken cancellationToken = default)
     {
         await using var memoryStream = new MemoryStream();
-        await botClient.GetInfoAndDownloadFileAsync(fileId, memoryStream, cancellationToken);
+        await botClient.DownloadFileAsync(filePath, memoryStream, cancellationToken);
         return memoryStream.ToArray();
     }
 }

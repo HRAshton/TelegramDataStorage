@@ -40,8 +40,7 @@ public partial class MessagesRegistryService(
 
     private async Task<IDictionary<string, int>> RetrieveMessagesRegistryAsync()
     {
-        var chat = await telegramBotWrapper.GetChatAsync(config.Value.ChatId);
-        var description = chat.Description;
+        var description = await telegramBotWrapper.GetChatDescriptionAsync(config.Value.ChatId);
         if (description is null or "")
         {
             Log.ChatDoesNotContainDescription(logger, config.Value.ChatId);
