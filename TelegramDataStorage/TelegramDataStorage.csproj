@@ -11,7 +11,7 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <Version>1.2.1</Version>
+        <Version>1.3.0</Version>
         <Authors>HRAshton</Authors>
         <PackageTags>Telegram</PackageTags>
         <Description>Store your data (config, session, etc.) in a telegram chat.</Description>
@@ -19,8 +19,8 @@
         <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
         <PackageReleaseNotes>
-            - Migrated from Newtonsoft.Json to System.Text.Json.
-            - Updated dependencies.
+            - Update dependencies.
+            - Hide library implementation from interfaces.
         </PackageReleaseNotes>
     </PropertyGroup>
 

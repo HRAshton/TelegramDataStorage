@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.3.0
+
+### How to migrate
+
+Some interfaces were changed to hide the library implementation.
+If you have implemented any of these interfaces, you will need to update your implementation.
+
+### Changed
+
+- Update dependencies.
+- Hide library implementation from interfaces.
+
 ## 1.2.1
 
 ### How to migrate
