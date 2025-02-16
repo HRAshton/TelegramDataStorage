@@ -29,7 +29,7 @@ dotnet_diagnostic.SA1309.severity = none
 dotnet_diagnostic.SX1309.severity = warning
 dotnet_diagnostic.SA1633.severity = none
 
-[TelegramDataStorage.Tests{/,/**/}*.cs]
+[*{Tests,IntegrationTests}*.cs]
 dotnet_diagnostic.CA1707.severity = silent
 dotnet_diagnostic.CA2201.severity = silent
 dotnet_diagnostic.CS8600.severity = silent

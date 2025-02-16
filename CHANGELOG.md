@@ -16,6 +16,7 @@ If you have implemented any of these interfaces, you will need to update your im
 
 - Update dependencies.
 - Hide library implementation from interfaces.
+- Split `TelegramDataStorage.Core`, `TelegramDataStorage.TelegramBot` and `TelegramDataStorage.WTelegramBot`.
 
 ## 1.2.1
 

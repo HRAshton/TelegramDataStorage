@@ -1,0 +1,14 @@
+﻿<Solution>
+  <Folder Name="/Packages/">
+    <Project Path="src\TelegramDataStorage.TelegramBot\TelegramDataStorage.TelegramBot.csproj" Type="Classic C#" />
+    <Project Path="src\TelegramDataStorage.WTelegramBot\TelegramDataStorage.WTelegramBot.csproj" Type="Classic C#" />
+  </Folder>
+  <Folder Name="/Tests/">
+    <Project Path="tests\TelegramDataStorage.Core.Tests\TelegramDataStorage.Core.Tests.csproj" Type="Classic C#" />
+    <Project Path="tests\TelegramDataStorage.IntegrationTests.SharedData\TelegramDataStorage.IntegrationTests.SharedData.csproj" Type="Classic C#" />
+    <Project Path="tests\TelegramDataStorage.TelegramBot.Tests\TelegramDataStorage.TelegramBot.Tests.csproj" Type="Classic C#" />
+    <Project Path="tests\TelegramDataStorage.WTelegramBot.Tests\TelegramDataStorage.WTelegramBot.Tests.csproj" Type="Classic C#" />
+  </Folder>
+  <Project Path="src\TelegramDataStorage.Abstractions\TelegramDataStorage.Abstractions.csproj" Type="Classic C#" />
+  <Project Path="src\TelegramDataStorage.Core\TelegramDataStorage.Core.csproj" Type="Classic C#" />
+</Solution>

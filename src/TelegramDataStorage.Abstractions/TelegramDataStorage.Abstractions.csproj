@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <RootNamespace>TelegramDataStorage</RootNamespace>
+        <Nullable>enable</Nullable>
+        <LangVersion>12</LangVersion>
+
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <Version>1.1.0</Version>
+        <Authors>HRAshton</Authors>
+        <PackageTags>Telegram;Abstractions</PackageTags>
+        <Description>Abstractions for TelegramDataStorage.</Description>
+        <PackageReadmeFile>_readme.md</PackageReadmeFile>
+        <PackageLicenseFile>_license.txt</PackageLicenseFile>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <PackageReleaseNotes>
+            - Exceptions and interfaces are now in the Abstractions project.
+        </PackageReleaseNotes>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="..\..\_readme.md" Pack="true" PackagePath="\"/>
+        <None Include="..\..\_license.txt" Pack="true" PackagePath="\"/>
+    </ItemGroup>
+
+</Project>

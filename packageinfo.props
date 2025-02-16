@@ -1,0 +1,8 @@
+<PropertyGroup>
+    <Authors>HRAshton</Authors>
+    <PackageTags>Telegram</PackageTags>
+    <Description>Store your data (config, session, etc.) in a telegram chat.</Description>
+    <PackageReadmeFile>_readme.md</PackageReadmeFile>
+    <PackageLicenseFile>_license.txt</PackageLicenseFile>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+</PropertyGroup>
